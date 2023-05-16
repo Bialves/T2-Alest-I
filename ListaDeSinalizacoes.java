@@ -26,13 +26,13 @@ public class ListaDeSinalizacoes {
         if(contains(e) == null) {
             Node n = new Node(e);
 
-            if(head == null) { //se é o 1° elemento da lista
+            if(head == null) { // Se é o primeiro elemento da lista
                 head = n;
-            }else{ //senão, adicionado após o último elemento
+            }else{ // Senão, adicionado após o último elemento
                 tail.next = n;
             }
-            tail = n; //atualiza tail
-            count++; //atualiza o contador
+            tail = n; 
+            count++; 
             return true;
         }
         return false;
@@ -74,9 +74,9 @@ public class ListaDeSinalizacoes {
         LocalDate date = null;
 
         if(index < 0 || index >= count) {
-            throw new IndexOutOfBoundsException(); //exceção
-        }else if(index == count-1) { //se é o último elemento da lista
-            date = tail.element.getImplantacao(); //condição para evitar NullPointerException de sinalizações sem data de implementação
+            throw new IndexOutOfBoundsException(); // Exceção
+        }else if(index == count-1) { // Se é o último elemento da lista
+            date = tail.element.getImplantacao(); // Para evitar NullPointerException de sinalizações sem data de implementação
             if(date == null) {
                 return -1;
             }else{
@@ -98,9 +98,9 @@ public class ListaDeSinalizacoes {
 
     public LocalDate getDataImplantacao(int index) {
         if(index < 0 || index >= count) {
-            throw new IndexOutOfBoundsException(); //exceção
+            throw new IndexOutOfBoundsException(); // Exceção
         }else if(index == count-1) {
-            return tail.element.getImplantacao(); //se é o último elemento da lista
+            return tail.element.getImplantacao(); // Se é o último elemento da lista
         }else{
             Node aux = head;
             for(int i=0; i<index; i++) {
@@ -110,45 +110,55 @@ public class ListaDeSinalizacoes {
         }
     }
 
-    public Sinalizacao getMaiorData() {
+    public ListaDeSinalizacoes getMaiorData() {
+        ListaDeSinalizacoes lista = new ListaDeSinalizacoes();
+
         if(count == 0) {
-            throw new NullPointerException(); //exceção
+            throw new NullPointerException(); // Exceção
         }else if(count == 1) {
-            return head.element; //se já apenas 1 elemento na lista
+            lista.add(head.element);
+            return lista; // Apenas 1 elemento na lista
         }else{
             Node aux = head;
-            Sinalizacao sinalizacao = aux.element;
             LocalDate maior = aux.element.getImplantacao();
 
             for(int i=0; i<count; i++) {
-                if(aux.element.getImplantacao().isAfter(maior)) {
-                    maior = aux.element.getImplantacao();
-                    sinalizacao = aux.element;
+                if(aux.element.getImplantacao().isAfter(maior)) { // Descobre a maior data
+                    maior = aux.element.getImplantacao(); 
+                    lista = new ListaDeSinalizacoes(); // Reseta a lista
+                    lista.add(aux.element); // Adiciona a data maior na lista
+                }else if(aux.element.getImplantacao().equals(maior)) {
+                    lista.add(aux.element); // Se é igual a maior data existente, adiciona na lista
                 }
                 aux = aux.next;
             } 
-            return sinalizacao;
+            return lista;
         }
     }
 
-    public Sinalizacao getMenorData() {
+    public ListaDeSinalizacoes getMenorData() {
+        ListaDeSinalizacoes lista = new ListaDeSinalizacoes();
+
         if(count == 0) {
-            throw new NullPointerException(); //exceção
+            throw new NullPointerException(); // Exceção
         }else if(count == 1) {
-            return head.element; //se já apenas 1 elemento na lista
+            lista.add(head.element);
+            return lista; // Apenas 1 elemento na lista
         }else{
             Node aux = head;
-            Sinalizacao sinalizacao = aux.element;
             LocalDate menor = aux.element.getImplantacao();
 
             for(int i=0; i<count; i++) {
-                if(aux.element.getImplantacao().isBefore(menor)) {
+                if(aux.element.getImplantacao().isBefore(menor)) { // Descobre a menor data
                     menor = aux.element.getImplantacao();
-                    sinalizacao = aux.element;
+                    lista = new ListaDeSinalizacoes(); // Reseta a lista
+                    lista.add(aux.element); // Adiciona a data menor na lista
+                }else if(aux.element.getImplantacao().equals(menor)) {
+                    lista.add(aux.element); // Se é igual a menor data existente, adiciona na lista
                 }
                 aux = aux.next;
             } 
-            return sinalizacao;
+            return lista;
         }
     }
 

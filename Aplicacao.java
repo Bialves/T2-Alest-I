@@ -10,17 +10,17 @@ public class Aplicacao {
     private Scanner scan;
     private ListaDeRuas listaRuas;
     private boolean executa;
-    Rua current;
+    private Rua current;
 
     public Aplicacao() {
         scan = new Scanner(System.in);
         listaRuas = new ListaDeRuas(); 
         this.executa = true;
     }
-
+    // FUNÇÃO PRINCIPAL
     public void run() {
         listaRuas.reset();
-        current = listaRuas.current();
+        current = listaRuas.getCurrent();
         
         do {
             menu();
@@ -36,20 +36,20 @@ public class Aplicacao {
                 case 3: 
                     Rua rua = listaRuas.getRuaComMaisSinalizacoes();
                     System.out.println(">>> Rua com mais sinalizações: " + rua.toString());
-                    System.out.println("Quantidade de sinalizações: " + rua.getListaSinalizacoes().size());
+                    System.out.println(">> Quantidade de sinalizações: " + rua.getListaSinalizacoes().size());
                     break;
                 case 4:
                     System.out.println(">>> Saindo...");
                     executa = false;
                     break;
                 default:
-                    System.out.println("Opção inválida!");
+                    System.out.println("ERRO: Opção inválida!");
             }
 
         }while(executa);
     }
 
-    //MENU DE OPÇÕES
+    // MENU DE OPÇÕES
     public void menu() {
         System.out.println("============== MENU ===============");
         System.out.println("1. Modo de navegação");
@@ -59,13 +59,13 @@ public class Aplicacao {
         System.out.print("> ");
     }
 
-    //MODOS DE NAVEGAÇÃO
+    // MODOS DE NAVEGAÇÃO
     public void navegacao() {
         Rua aux = null;
 
         do{
             System.out.println();
-            ruaAtual(); //header.next
+            ruaAtual(); 
             System.out.println("============ MENU DE NAVEGAÇÃO ============");
             System.out.println("1. Retroceder");
             System.out.println("2. Avançar");
@@ -76,34 +76,34 @@ public class Aplicacao {
                 break;
             }else if(opcao == 1) {
                 aux = listaRuas.prev();
-                if(aux == null) {
+                if(aux == null) { // Se aux cair em NullPointerExecption (header)
                     System.out.println("ERRO: impossível retroceder!");
-                    listaRuas.reset(); //se cair em null (header)
-                    aux = listaRuas.current();
+                    listaRuas.reset(); // Reseta current
+                    aux = listaRuas.getCurrent(); // aux recebe current
                 }else{
-                    if(listaRuas.current() == null) {
+                    if(listaRuas.getCurrent() == null) { // Se current cair em NullPointerException (trailer)
                         System.out.println("ERRO: impossível retroceder!");
-                        listaRuas.reset();
-                        current = listaRuas.current();
-                        aux = current;
+                        listaRuas.reset(); // Reseta current
+                        current = listaRuas.getCurrent(); // Variável current recebe o current da lista
+                        aux = current; // aux recebe current
                     }else{
-                        current = listaRuas.current();
+                        current = listaRuas.getCurrent();
                     }
                 }
             }else if(opcao == 2) {
                 aux = listaRuas.next();
-                if(aux == null) {
+                if(aux == null) { // Se aux cair em NullPointerExecption (trailer)
                     System.out.println("ERRO: impossível avançar!");
-                    listaRuas.prev(); //se cair em null (trailer)
-                    aux = listaRuas.current(); 
+                    listaRuas.prev();  // current retorna na lista
+                    aux = listaRuas.getCurrent(); // aux recebe current
                 }else{
-                    if(listaRuas.current() == null) {
+                    if(listaRuas.getCurrent() == null) { // Se current cair em NullPointerException (trailer)
                         System.out.println("ERRO: impossível avançar!");
-                        listaRuas.prev(); //se cair em null (trailer)
-                        current = listaRuas.current(); 
+                        listaRuas.prev(); // current retorna na lista
+                        current = listaRuas.getCurrent();  // Variável current recebe o current da lista
                         aux = current;
                     }else{
-                        current = listaRuas.current();
+                        current = listaRuas.getCurrent();
                     }
                 }
             }else{
@@ -111,36 +111,58 @@ public class Aplicacao {
             }
         }while(true);
     }
-    //IMPRIME INFORMAÇÕES DA RUA ATUAL DO MENU DE NAVEGAÇÃO
+    // IMPRIME INFORMAÇÕES DA RUA ATUAL DO MENU DE NAVEGAÇÃO
     public void ruaAtual() {
+        int tam = current.getListaSinalizacoes().size();
         System.out.println(">>> Rua atual: " + current.toString());
+        System.out.println(">> Quantidade de sinalizações: " + tam);
         System.out.println(">> Sinalizações da rua:");
         System.out.println(current.getListaSinalizacoes().toString());
-        System.out.println("-----------------------------------------------------------------------------");
-        int tam = current.getListaSinalizacoes().size();
-        System.out.println("Quantidade de sinalizações: " + tam);
-        if(tam == 1) {
+        System.out.println("----------------------------------------------------------------------------------------------------------------");
+        int menor = current.getListaSinalizacoes().getMenorData().size();
+        int maior = current.getListaSinalizacoes().getMaiorData().size();
+        if(tam == 1) { // Se a Rua possui apenas uma Sinalização
             System.out.println("Primeira e última sinalização implementada: " 
                 + "\n" + current.getListaSinalizacoes().getMenorData().toString() + "\n");
-        }else{
-            System.out.println("Primeira sinalização implementada: " 
-                + "\n" + current.getListaSinalizacoes().getMenorData().toString());
-            System.out.println("Última sinalização implementada: " 
-                + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+        }else{ // Se possui mais de uma Sinalização
+            if(menor == 1) { // Se existe mais de uma Sinalização com a mesma data
+                if(maior == 1) {
+                    System.out.println("Primeira sinalização implementada: " 
+                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                    System.out.println("Última sinalização implementada: " 
+                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                }else{
+                    System.out.println("Primeira sinalização implementada: " 
+                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                    System.out.println("Últimas sinalizações implementadas: " 
+                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                }
+            }else{
+                if(maior == 1) {
+                    System.out.println("Primeiras sinalizações implementadas: " 
+                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                    System.out.println("Última sinalização implementada: " 
+                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                }else{
+                    System.out.println("Primeiras sinalizações implementadas: " 
+                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                    System.out.println("Últimas sinalizações implementadas: " 
+                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                }
+            }
         }
     }
-
-    //LEITURA DO CSV
+    // LEITURA DO ARQUIVO CSV
     public void leituraCSV() {
         String linhas[] = new String[91708];
         int numLinhas = 0;
         
         try(BufferedReader reader = new BufferedReader(new FileReader("dataEditado.csv", Charset.forName("UTF-8")))) {
-            String line = reader.readLine(); //pula o header da planilha
+            String line = reader.readLine(); // Pula o header da planilha
             line = reader.readLine();
 
             while (line != null) {
-                linhas[numLinhas] = line; //armezena a info inteira da linha
+                linhas[numLinhas] = line; // Armezena as infos de uma linha inteira
                 numLinhas++;
                 line = reader.readLine();
             }
@@ -149,7 +171,7 @@ public class Aplicacao {
         }
 
         for(int i = 0; i < numLinhas; i++) {
-            String[] campos = linhas[i].split(";"); //quebra as linhas em palavras
+            String[] campos = linhas[i].split(";"); // Quebra as linhas em palavras (campos)
 
             String descricao = campos[1];
             String estado = campos[2];
@@ -190,13 +212,13 @@ public class Aplicacao {
             if(campos.length>=13) localInstalacao = campos[12];
 
             // INSTANCIA DOS OBJETOS
-            ListaDeSinalizacoes listaSinalizacoes = new ListaDeSinalizacoes(); //reseta a lista de sinalizações
+            ListaDeSinalizacoes listaSinalizacoes = new ListaDeSinalizacoes(); // Reseta a lista de sinalizações
 
-            Rua rua = listaRuas.contains(nomeLog);
+            Rua rua = listaRuas.contains(nomeLog); // Verifica se a Rua já não existe
 
-            if(rua == null) {
+            if(rua == null) { // Senão, instancia a mesma
                 rua = new Rua(logradouro, nomeLog, listaSinalizacoes);
-
+                // Verifica se a Sinalização já não existe
                 Sinalizacao sinalizacao = listaSinalizacoes.contains(
                     new Sinalizacao(
                         numInicial, numFinal, localInstalacao, date, cruzamento, lado, 
@@ -204,7 +226,7 @@ public class Aplicacao {
                     )
                 );
 
-                if(sinalizacao == null) {
+                if(sinalizacao == null) { // Senão, instancia ela e adiciona na lista da Rua
                     sinalizacao = new Sinalizacao(
                         numInicial, numFinal, localInstalacao, date, cruzamento, 
                         lado, descricao, fluxo, defronte, complemento, estado
@@ -212,8 +234,8 @@ public class Aplicacao {
 
                     rua.getListaSinalizacoes().add(sinalizacao);
                 }
-                listaRuas.orderedAdd(rua);
-            }else{
+                listaRuas.orderedAdd(rua); // Finaliza adicionando a Rua na lista
+            }else{ // Se a Rua já existe, verifica se a Sinalização já existe na lista de sinalizações da Rua
                 Sinalizacao sinalizacao = rua.getListaSinalizacoes().contains(
                     new Sinalizacao(
                         numInicial, numFinal, localInstalacao, date, cruzamento, lado, 
@@ -221,7 +243,7 @@ public class Aplicacao {
                     )
                 );
 
-                if(sinalizacao == null) {
+                if(sinalizacao == null) { // Senão, instancia a Sinalização e adiciona na lista de sinalizações da Rua
                     sinalizacao = new Sinalizacao(
                         numInicial, numFinal, localInstalacao, date, cruzamento, lado, 
                         descricao, fluxo, defronte, complemento, estado

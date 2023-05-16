@@ -28,29 +28,26 @@ public class ListaDeRuas {
     }
 
     public boolean orderedAdd(Rua e)  { 
-        if(contains(e.getNome()) == null) {  //senão contám element, o insere
+        if(contains(e.getNome()) == null) {  // Senão contém element, o insere na lista
             Node n = new Node(e);
 
-            if(header.next == trailer) { //se a lista está vazia
+            if(header.next == trailer) { // Se a lista está vazia, insere no inicio
                 n.prev = header;
                 n.next = trailer;
                 trailer.prev = n;
                 header.next = n;
 
-            } 
-            else if(e.getNome().compareTo(header.next.element.getNome())<0) { //se for menor que o primeiro, insere no inicio
+            }else if(e.getNome().compareTo(header.next.element.getNome())<0) { // Se for menor que o primeiro, insere no inicio
                 n.next = header.next;
                 n.prev = header;
                 header.next = n;
                 n.next.prev = n;
-            }
-            else if(e.getNome().compareTo(trailer.prev.element.getNome())>0) { //se for maior que o último, insere no final
+            }else if(e.getNome().compareTo(trailer.prev.element.getNome())>0) { // Se for maior que o último, insere no final
                 n.next = trailer;
                 n.prev = trailer.prev;
                 trailer.prev.next = n;
                 trailer.prev = n;
-            }
-            else { //senão procura a posição correta para inserção
+            }else{ // Senão procura a posição correta para inserção
                 Node aux = header.next;
                 boolean inseriu=false;
                 while(aux!=trailer && !inseriu) {
@@ -80,7 +77,7 @@ public class ListaDeRuas {
         return null;
     }    
     
-    public Rua next() {
+    public Rua next() { // Método que permitir percorrer avançando na lista
         if(current != trailer) {
             Rua aux = current.element;
             current = current.next;
@@ -89,7 +86,7 @@ public class ListaDeRuas {
         return null;
     }
     
-    public Rua prev() {
+    public Rua prev() { // Mesma lógica do next(), mas retrocede na lista
         if(current != header) {
             Rua aux = current.element;
             current = current.prev;
@@ -102,7 +99,7 @@ public class ListaDeRuas {
         current = header.next;
     } 
 
-    public Rua current() {
+    public Rua getCurrent() {
         return current.element;
     }
 
