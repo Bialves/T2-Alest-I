@@ -1,11 +1,6 @@
 import java.time.LocalDate;
 
 public class ListaDeSinalizacoes {
-    private Node head;
-    private Node tail;
-    private Node current;
-    private int count;
-
     class Node {
         public Sinalizacao element;
         public Node next;
@@ -15,6 +10,11 @@ public class ListaDeSinalizacoes {
             next = null;
         }
     }
+
+    private Node head;
+    private Node tail;
+    private Node current;
+    private int count;
     
     public ListaDeSinalizacoes() {
         head = null;
@@ -22,7 +22,7 @@ public class ListaDeSinalizacoes {
         count = 0;
     }
 
-    public boolean add(Sinalizacao e) {
+    public void add(Sinalizacao e) {
         if(contains(e) == null) {
             Node n = new Node(e);
 
@@ -32,10 +32,8 @@ public class ListaDeSinalizacoes {
                 tail.next = n;
             }
             tail = n; 
-            count++; 
-            return true;
+            count++;
         }
-        return false;
     }
 
     public int size() {
@@ -43,7 +41,7 @@ public class ListaDeSinalizacoes {
     }
 
     public Sinalizacao next(){
-        Sinalizacao aux = null;
+        Sinalizacao aux;
 
         if(current != null) {
             aux = current.element;
@@ -71,7 +69,7 @@ public class ListaDeSinalizacoes {
     }    
 
     public int getMes(int index) {
-        LocalDate date = null;
+        LocalDate date;
 
         if(index < 0 || index >= count) {
             throw new IndexOutOfBoundsException(); // Exceção

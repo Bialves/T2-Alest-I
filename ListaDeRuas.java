@@ -1,10 +1,5 @@
 public class ListaDeRuas {
-    private Node header;
-    private Node trailer;
-    private Node current;      
-    private int count;
-
-    private class Node {
+    class Node {
         public Rua element;
         public Node next;
         public Node prev;
@@ -15,6 +10,11 @@ public class ListaDeRuas {
         }
     }
 
+    private Node header;
+    private Node trailer;
+    private Node current;
+    private int count;
+
     public ListaDeRuas() {
         header = new Node(null);
         trailer = new Node(null);
@@ -22,12 +22,8 @@ public class ListaDeRuas {
         trailer.prev = header;
         count = 0;
     }
-    
-    public int size() {
-        return count;
-    }
 
-    public boolean orderedAdd(Rua e)  { 
+    public void orderedAdd(Rua e)  {
         if(contains(e.getNome()) == null) {  // Senão contém element, o insere na lista
             Node n = new Node(e);
 
@@ -62,9 +58,7 @@ public class ListaDeRuas {
                 }
             }
             count++;
-            return true;
         }
-        return false;
     }
     
     public Rua contains(String nome) {
@@ -97,7 +91,11 @@ public class ListaDeRuas {
 
     public void reset() {
         current = header.next;
-    } 
+    }
+
+    public int size() {
+        return count;
+    }
 
     public Rua getCurrent() {
         return current.element;
@@ -126,30 +124,30 @@ public class ListaDeRuas {
     }
 
     public int getMesComMaisSinalizacoes() {
-        int[] meses = new int[12];
+        int[] meses = new int[12]; // Arranjo onde cada índice é um mês
         Node aux = header.next;
+        int mes = 0;
 
         for(int i=0; i<count; i++) {
             Rua rua = aux.element;
-            int tam = rua.getListaSinalizacoes().size();
+            int tam = rua.getListaSinalizacoes().size(); // Atualiza o número de iterações
             for(int j=0; j<tam; j++) {
-                int mes = rua.getListaSinalizacoes().getMes(j);
-                if(mes != -1) {
-                    meses[mes-1] = meses[mes-1] + 1;
+                mes = rua.getListaSinalizacoes().getMes(j); // Descobre o mês da Sinalização
+                if(mes != -1) { // Se a Sinalização possui data
+                    meses[mes-1] += 1; // Incrementa 1 no índice do mês correspondente
                 }
             }
             aux = aux.next;
         }
-
+        // Descobre o mês com mais Sinalizações (confere o índice do arranjo)
         int maior = 0;
-        int r = 0;
         for(int k=0; k<meses.length; k++) {
             if(meses[k] > maior) {
                 maior = meses[k];
-                r = k+1;
+                mes = k+1;
             }
         }
-        return r;
+        return mes;
     }
     
     @Override
