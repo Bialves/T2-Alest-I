@@ -69,7 +69,7 @@ public class Aplicacao {
             System.out.println("============ MENU DE NAVEGAÇÃO ============");
             System.out.println("1. Retroceder");
             System.out.println("2. Avançar");
-            System.out.println("3. Retornar ao Menu inicial");
+            System.out.println("3. Retornar ao Menu");
             System.out.print("> ");
             int opcao = scan.nextInt();
             if(opcao == 3) {
