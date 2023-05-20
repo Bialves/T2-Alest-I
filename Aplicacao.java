@@ -1,14 +1,16 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.nio.charset.Charset;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Aplicacao {
-    private Scanner scan;
-    private ListaDeRuas listaRuas;
+    private final Scanner scan;
+    private final ListaDeRuas listaRuas;
     private boolean executa;
     private Rua current;
 
@@ -61,7 +63,7 @@ public class Aplicacao {
 
     // MODOS DE NAVEGAÇÃO
     public void navegacao() {
-        Rua aux = null;
+        Rua aux;
 
         do{
             System.out.println();
@@ -81,7 +83,7 @@ public class Aplicacao {
                     listaRuas.reset(); // Reseta current
                     aux = listaRuas.getCurrent(); // aux recebe current
                 }else{
-                    if(listaRuas.getCurrent() == null) { // Se current cair em NullPointerException (trailer)
+                    if(listaRuas.getCurrent() == null) { // Se current cair em NullPointerException (header)
                         System.out.println("ERRO: impossível retroceder!");
                         listaRuas.reset(); // Reseta current
                         current = listaRuas.getCurrent(); // Variável current recebe o current da lista
@@ -113,61 +115,65 @@ public class Aplicacao {
     }
     // IMPRIME INFORMAÇÕES DA RUA ATUAL DO MENU DE NAVEGAÇÃO
     public void ruaAtual() {
-        int tam = current.getListaSinalizacoes().size();
+        ListaDeSinalizacoes listaSinalizacoes = current.getListaSinalizacoes();
+
+        int tam = listaSinalizacoes.size();
         System.out.println(">>> Rua atual: " + current.toString());
         System.out.println(">> Quantidade de sinalizações: " + tam);
         System.out.println(">> Sinalizações da rua:");
-        System.out.println(current.getListaSinalizacoes().toString());
-        System.out.println("----------------------------------------------------------------------------------------------------------------");
-        int menor = current.getListaSinalizacoes().getMenorData().size();
-        int maior = current.getListaSinalizacoes().getMaiorData().size();
+        System.out.println(listaSinalizacoes.toString());
+        System.out.println("-------------------------------------------------------------------------->>>");
+        int menor = listaSinalizacoes.getMenorData().size();
+        int maior = listaSinalizacoes.getMaiorData().size();
         if(tam == 1) { // Se a Rua possui apenas uma Sinalização
             System.out.println("Primeira e última sinalização implementada: " 
-                + "\n" + current.getListaSinalizacoes().getMenorData().toString() + "\n");
+                + "\n" + listaSinalizacoes.getMenorData().toString() + "\n");
         }else{ // Se possui mais de uma Sinalização
             if(menor == 1) { // Se existe mais de uma Sinalização com a mesma data
                 if(maior == 1) {
                     System.out.println("Primeira sinalização implementada: " 
-                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                        + "\n" + listaSinalizacoes.getMenorData().toString());
                     System.out.println("Última sinalização implementada: " 
-                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                        + "\n" + listaSinalizacoes.getMaiorData().toString() + "\n");
                 }else{
                     System.out.println("Primeira sinalização implementada: " 
-                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                        + "\n" + listaSinalizacoes.getMenorData().toString());
                     System.out.println("Últimas sinalizações implementadas: " 
-                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                        + "\n" + listaSinalizacoes.getMaiorData().toString() + "\n");
                 }
             }else{
                 if(maior == 1) {
                     System.out.println("Primeiras sinalizações implementadas: " 
-                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                        + "\n" + listaSinalizacoes.getMenorData().toString());
                     System.out.println("Última sinalização implementada: " 
-                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                        + "\n" + listaSinalizacoes.getMaiorData().toString() + "\n");
                 }else{
                     System.out.println("Primeiras sinalizações implementadas: " 
-                        + "\n" + current.getListaSinalizacoes().getMenorData().toString());
+                        + "\n" + listaSinalizacoes.getMenorData().toString());
                     System.out.println("Últimas sinalizações implementadas: " 
-                        + "\n" + current.getListaSinalizacoes().getMaiorData().toString() + "\n");
+                        + "\n" + listaSinalizacoes.getMaiorData().toString() + "\n");
                 }
             }
         }
     }
     // LEITURA DO ARQUIVO CSV
     public void leituraCSV() {
-        String linhas[] = new String[91708];
+        String[] linhas = new String[91708];
         int numLinhas = 0;
         
-        try(BufferedReader reader = new BufferedReader(new FileReader("dataEditado.csv", Charset.forName("UTF-8")))) {
+        try(BufferedReader reader = new BufferedReader(new FileReader("dataEditado.csv", StandardCharsets.UTF_8))) {
             String line = reader.readLine(); // Pula o header da planilha
             line = reader.readLine();
 
-            while (line != null) {
+            while(line != null) {
                 linhas[numLinhas] = line; // Armezena as infos de uma linha inteira
                 numLinhas++;
                 line = reader.readLine();
             }
-        }catch(Exception e) {
-            System.err.format("Erro na leitura do arquivo: ", e.getMessage());
+        }catch(FileNotFoundException e) {
+            System.err.format("CSV não encontrado: " + e.getMessage());
+        }catch(IOException e) {
+            System.err.format(e.getMessage());
         }
 
         for(int i = 0; i < numLinhas; i++) {
@@ -177,7 +183,7 @@ public class Aplicacao {
             String estado = campos[2];
             String complemento = campos[3];
 
-            DateTimeFormatter formatter = null;       
+            DateTimeFormatter formatter;
             LocalDate date = null;
             if(!campos[4].equals("")) {
                 if(campos[4].contains("-")) {
