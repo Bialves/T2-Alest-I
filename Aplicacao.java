@@ -120,8 +120,6 @@ public class Aplicacao {
         int tam = listaSinalizacoes.size();
         System.out.println(">>> Rua atual: " + current.toString());
         System.out.println(">> Quantidade de sinalizações: " + tam);
-        System.out.println(">> Sinalizações da rua:");
-        System.out.println(listaSinalizacoes.toString());
         System.out.println("-------------------------------------------------------------------------->>>");
         int menor = listaSinalizacoes.getMenorData().size();
         int maior = listaSinalizacoes.getMaiorData().size();
